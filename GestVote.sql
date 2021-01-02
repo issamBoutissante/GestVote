@@ -31,7 +31,7 @@ constraint fk_codeCat_Categorie foreign key(codeCat) references Categorie(codeCa
 -- La table Juge
 create table Juge(
 codeJ varchar(10) primary key,
-num int ,
+nom varchar(20) ,
 prenom varchar(20),
 nationalite varchar(20)
 )
@@ -59,16 +59,16 @@ insert into Film values('F5',' Spy','description: Spy... ','anglais',2015,'C4')
 insert into Film values('F6','Bloodshot','description: Bloodshot...','anglais',2020,'C1')
 
 -- la remplissage de table Juge
-insert into Juge values('J1',1,'mohammed','Marocaine') 
-insert into Juge values('J2',2,'tanirte','Marocaine') 
-insert into Juge values('J3',3,'idder','Marocaine') 
-insert into Juge values('J4',4,'youba','Marocaine') 
-insert into Juge values('J5',5,'ghilas','Marocaine') 
-insert into Juge values('J6',6,'toudrt','Marocaine') 
-insert into Juge values('J7',7,'mina','Marocaine') 
-insert into Juge values('J8',8,'fatima','Marocaine') 
-insert into Juge values('J9',9,'amnay','Marocaine') 
-insert into Juge values('J10',10,'tilila','Marocaine') 
+insert into Juge values('J1','ahnich','mohammed','Marocaine') 
+insert into Juge values('J2','haniri','tanirte','Marocaine') 
+insert into Juge values('J3','blla','idder','Marocaine') 
+insert into Juge values('J4','addi','youba','Marocaine') 
+insert into Juge values('J5','hdriya','ghilas','Marocaine') 
+insert into Juge values('J6','mojahid','toudrt','Marocaine') 
+insert into Juge values('J7','amzouar','mina','Marocaine') 
+insert into Juge values('J8','agraram','fatima','Marocaine') 
+insert into Juge values('J9','mchkih','amnay','Marocaine') 
+insert into Juge values('J10','amrabt','tilila','Marocaine') 
 
 -- la remplissage de Vote
 insert into Vote values('F1','J1')
@@ -91,3 +91,31 @@ alter table Film add constraint anProduction check(anne_production < datePart(Ye
 --      Action et qui ont été produit a partir de l’année 2019 
 select * from Film
 where codeCat='C1' and anne_production>=2019
+
+-- 7-	Ecrire une requête qui affiche le nom et prénom de tous 
+--      les membres de jury qui ont voté pour le film « The Shawshank rendemption »
+select nom,prenom from Vote join Juge
+on Vote.codeJ=Juge.codeJ
+where codeF='F1'
+
+-- 8-	Ecrire une requête qui affiche le nombre de votes par film classé en ordre décroissant.
+select titre,count(codeJ) nombreVote from Vote join Film
+on Vote.codeF=Film.codeF
+group by titre
+order by nombreVote desc
+
+-- 9-	Ecrire une requête qui affiche les noms des juges qui ont voté pour le même film 
+--      que le juge «mojahid toudrt »
+
+--    les Etapes
+--   a : trouver le codeF qui a ete vote par <<mojahid toudrt >>      [Table 1]
+select codeF from Vote join Juge
+on Vote.codeJ=Juge.codeJ
+where prenom='toudrt' and nom='mojahid'
+
+--  b : trouver les noms des juges qui ont vote pour le CodeF dans La [Table 1]
+select nom from Vote join Juge
+on Vote.codeJ=Juge.codeJ
+where CodeF=(select codeF from Vote join Juge
+on Vote.codeJ=Juge.codeJ
+where prenom='toudrt' and nom='mojahid')
