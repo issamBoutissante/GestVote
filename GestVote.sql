@@ -88,12 +88,27 @@ insert into Vote values('F3','J10')
 alter table Film add constraint anProduction check(anne_production < datePart(Year,getdate()))
 
 -- 6-	Ecrire une requête qui affiche tous les films de la catégorie
---      Action et qui ont été produit a partir de l’année 2019 
+--      Action et qui ont été produit a partir de l’année 2019
+-- avec jointure
+select * from film join Categorie
+on Film.codeCat=Categorie.codeCat
+where libelle='Action' and anne_production>=2019
+-- sans jointure ('C1' est le codeCat ( id ) de categorie 'Action')
 select * from Film
 where codeCat='C1' and anne_production>=2019
 
 -- 7-	Ecrire une requête qui affiche le nom et prénom de tous 
 --      les membres de jury qui ont voté pour le film « The Shawshank rendemption »
+
+-- avec la jointure
+
+select nom,prenom from Vote join Juge
+on Vote.codeJ=Juge.codeJ
+join film on film.codeF=Vote.codeF
+where titre='The Shawshank Redemption'
+
+--sans jointure ( 'F1' est le codeF de film The 'Shawshank Redemption' )
+
 select nom,prenom from Vote join Juge
 on Vote.codeJ=Juge.codeJ
 where codeF='F1'
@@ -119,3 +134,4 @@ on Vote.codeJ=Juge.codeJ
 where CodeF=(select codeF from Vote join Juge
 on Vote.codeJ=Juge.codeJ
 where prenom='toudrt' and nom='mojahid')
+and prenom <> 'toudrt' and nom <> 'mojahid'
